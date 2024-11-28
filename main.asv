@@ -1,0 +1,22 @@
+%% Bobina de Helmholtz 
+% ----
+% Simulación del a intensidad de campo 
+% Andrés Morales 
+% 27-nov-2024
+
+% Este script tiene como objetivo 
+clc; clear; close all; 
+
+load("fundamental_constants.mat")
+N = 500; 
+I = 200; % [mA]
+
+% Parámetros de la bobina 
+L = 34e-2; % [m] 
+
+N = 100; % Puntos de muestra para trayectoria 
+v_init = [0, 0, 0]';  % [m]
+v_end = [1, 3, 4]';  % [m]
+
+alpha = linspace(0, 1, N); 
+v_init 
