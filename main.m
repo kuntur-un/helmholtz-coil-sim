@@ -13,6 +13,7 @@ I = 200; % [mA]
 
 % Parámetros de la bobina 
 L = 34e-2; % [m] 
+z = 20e-2; % [m] 
 
 % Construccion de cuadrado 
 M = L/2 * [1 1 0;-1 1 0; -1 -1 0; 1 -1 0]'; 
@@ -30,15 +31,34 @@ for i = 1:4
 end 
 
 square_points  = square_points * 1e2; % Conversion a cm 
+Rx = @(t) [1 0 0; 0 cos(t) -sin(t); 0 sin(t) cos(t)]; 
+square_points = Rx(pi/2) * square_points; 
+
+% Coils 
+H = z * 1e2; % [cm]
+Hc1 =  [0 H, 0]' + square_points; 
+Hc2 = -[0 H, 0]' + square_points; 
+
+
+hfig = figure; 
+hfig.Name = "helmholtz-coil-viz"; 
+
 
 plot3( ...
-    square_points(1, :), ...
-    square_points(2, :), ...
-    square_points(3, :) ...
-    )
+    Hc1(1, :), ...
+    Hc1(2, :), ...
+    Hc1(3, :), ...
+    Hc2(1, :), ...
+    Hc2(2, :), ...
+    Hc2(3, :) ...
+    , LineWidth=2, Color='red'); 
 grid on; 
+axis([-40, 40, -40, 40, -40, 40])
+axis square; 
 
-title(""); 
+
+
+title("Helmholtz Coil"); 
 xlabel("x [cm]");
 ylabel("y [cm]");
 zlabel("z [cm]");
