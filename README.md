@@ -8,4 +8,4 @@ Script que paramétricamente genere las corrientes simplificadas de las bobinas.
 - Visualización de campo vectorial magnético dentro del Volumen delimitado. 
 - Empaqueta todo en un subsistema de Simulink para futuro control. 
 
-<img src="https://github.com/kuntur-un/helmholtz-coil-sim/blob/main/assets/helmholtz-viz.jpg"/> 
+<img src="https://github.com/kuntur-un/helmholtz-coil-sim/blob/main/assets/helmholtz-coil-viz.png"/> 
