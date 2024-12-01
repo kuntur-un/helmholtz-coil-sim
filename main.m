@@ -11,11 +11,11 @@ addpath("utilities/")
 
 load("fundamental_constants.mat")
 N = 500; 
-I = 200e-3; % [mA]
+I = 10; % [mA]
 
 % Parámetros de la bobina 
-L = 34e-2; % [m] 
-z = 20e-2; % [m] 
+L = 30e-2; % [m] 
+z = 0.5 * 0.54 * L; % [m] 
 
 % Construccion de cuadrado 
 M = L/2 * [1 1 0;-1 1 0; -1 -1 0; 1 -1 0]'; 
@@ -45,7 +45,7 @@ Hc2 = -[0 H, 0]' + square_points;
 
 %% Simulacion por BiotSavart 
 L = 18; 
-ds = 2; % Separacion entre elementos. 
+ds = 0.1; % Separacion entre elementos. 
 
 dr = @(L) -L:ds:L; 
 [X,Y,Z] = meshgrid(dr(L), dr(L), dr(L)); 
@@ -59,18 +59,52 @@ Bx = Bx1 + Bx2;
 By = By1 + By2; 
 Bz = Bz1 + Bz2; 
 
+%% Corte de intensidad 
+Bxsurf = Bx(:, :, floor(L/2) + 1); 
+Bysurf = By(:, :, floor(L/2) + 1); 
+Bzsurf = Bz(:, :, floor(L/2) + 1);
+
+Bsurf = sqrt(Bxsurf.^2 + Bysurf.^2 + Bzsurf.^2 );
+
+
 %% Visualización
+close all; 
 hfig = figure; hfig.Name = "helmholtz-coil-viz"; 
 
+% Gráficar las bobinas de Helmholtz 
 plot3(Hc1(1, :), Hc1(2, :), Hc1(3, :), LineWidth=3, Color='blue'); hold on; 
 plot3(Hc2(1, :), Hc2(2, :), Hc2(3, :), LineWidth=3, Color='blue'); 
-grid on; 
 axis([-30, 30, -30, 30, -30, 30]);
 axis square;  hold on; 
-quiver3(X, Y, Z, Bx, By, Bz, 2, Color="red"); hold off; 
-legend("coil", "", "field", "Location","best")
+
+% Grafica el campo vectorial 
+quiver3(X, Y, Z, Bx, By, Bz, 2, Color="red");
+% Graficar el contorno de intensidad en z = 0
+contourf(X(:, :, floor(L/2) + 1), Y(:, :, floor(L/2) + 1), Bsurf); 
+hold off; 
+
+legend("coil", "", "field", "Intensity", "Location","best")
 title("Helmholtz Coil" + " with I = " + num2str(I) + " [mA] and L = " + num2str(L) + " [cm]"); 
 xlabel("x [cm]"); ylabel("y [cm]"); zlabel("z [cm]");
+hfig.Position = [20, 200, 400, 400]; 
+
+hfig = figure; hfig.Name = "helmholtz-coil-intensity"; 
+
+subplot(1, 2, 1); 
+contourf(X(:, :, floor(L/2) + 1), Y(:, :, floor(L/2) + 1), Bsurf); 
+axis square; 
+title("Intensidad de campo magnético en interior")
+xlabel("x [cm]"); ylabel("y [cm]"); 
+
+subplot(1, 2, 2); 
+% hfig = figure; hfig.Name = "helmholtz-coil-intensity-surf"; 
+surf(X(:, :, floor(L/2) + 1), Y(:, :, floor(L/2) + 1), Bsurf); 
+axis square; 
+title("Intensidad de campo magnético en interior")
+xlabel("x [cm]"); ylabel("y [cm]"); 
+hfig.Position = [484 197 909 431]
+
+
 
 %% Guardar datos 
 save("magnetic_field_result", "Bx", "By", "Bz", "X", "Y", "Z"); 
